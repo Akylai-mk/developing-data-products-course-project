@@ -1,0 +1,118 @@
+---
+title: 'Developing Data Products Course Project: Shiny App'
+author: "Akylai Mk"
+date: "October 3, 2020"
+output: 
+        ioslides_presentation:
+                transition: 0.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+The mortality rate in Kyrgyz Republic depends on time period, region, reason for death:
+- region: There are 7 regions in the country, and a capital Bishkek city
+- year: Available data given for 1998-2019
+- reason for death: different reasons are grouped into 18 major categories
+
+This shiny app helps understand mortality in Kyrgyzstan through data.
+
+## Documentation
+Data was taken from the National Statistical Committee of Kyrgyz Republic, www.stat.kg
+
+
+Output plots can be manipulated by choosing the reason for death and the region.
+
+The materials can be found in GitHub Repo: https://github.com/Akylai-mk/developing-data-products-course-project
+The shiny app is available at: https://akylaimk.shinyapps.io/mortalityKR/
+
+
+
+## Code plots that shiny app will produce. Part 1
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide', eval=FALSE}
+library(shiny)
+library(readxl)
+library(ggplot2)
+# Define UI for application that draws a histogram
+shinyUI(fluidPage(
+    # Application title
+    titlePanel("Understanding mortality in Kyrgyz Republic through data"),
+    # Sidebar with input for reason and line color
+       sidebarLayout(    
+    sidebarPanel(
+            selectInput("reason", h3("Select reason for death"),
+                        choices = c("infections", "Neoplasms",
+                                       "blood", "Endocrine", 
+                                       "Mental", "nervousSystem",
+                                       "earMastoid", 
+                                       "circulatorySystem",
+                                       "Respiratory", "DigestiveSystem",
+                                      
+        
+```
+
+## Code plots that shiny app will produce. Part 2
+```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide', eval=FALSE} 
+ "skin", "musculoskeletalSystem",
+                                       "GenitourinarySystem", "Pregnancy",
+                                       "perinatal", "CongenitalChromosomal",
+                                       "Abnormal", "InjuryPoisoning"),
+                        selected = 1)),
+        # Show a plot of the mortality
+        mainPanel(
+            h3("Mortality in Kyrgyz Republic over time"),
+            plotOutput("mortalityPlot"))
+        )
+))
+shinyServer(function(input, output) {
+    ##Read my data
+    myDF <- read_excel("mortality.xls")
+       output$mortalityPlot <- renderPlot({
+       
+```
+
+## Code plots that shiny app will produce. Part 3
+```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide', eval=FALSE} 
+dataReason <- switch(input$reason,
+                      "infections" = myDF$infections,
+                      "Neoplasms"=myDF$Neoplasms,
+                      "blood"=myDF$blood, 
+                      "Endocrine"=myDF$Endocrine, 
+                      "Mental"=myDF$Mental, 
+                      "nervousSystem"=myDF$nervousSystem,
+                      "earMastoid"=myDF$earMastoid, 
+                      "circulatorySystem"=myDF$circulatorySystem,
+                      "Respiratory"=myDF$Respiratory, 
+                      "DigestiveSystem"=myDF$DigestiveSystem,
+                      "skin"=myDF$skin, 
+                      "musculoskeletalSystem"=myDF$musculoskeletalSystem,
+                      "GenitourinarySystem"=myDF$GenitourinarySystem, 
+                      "Pregnancy"=myDF$Pregnancy,
+                 
+```
+
+## Code plots that shiny app will produce. Part 4
+```{r, echo=TRUE, warning=FALSE, message=FALSE, results='hide', eval=FALSE} 
+
+                      "perinatal"=myDF$perinatal, 
+                      "CongenitalChromosomal"=myDF$CongenitalChromosomal,
+                      "Abnormal"=myDF$Abnormal, 
+                      "InjuryPoisoning"=myDF$InjuryPoisoning)
+              ggplot() +
+        geom_line(myDF, mapping = aes(year, dataReason, color = region))
+           })
+
+})
+```
+## Links and references
+- shiny app: https://akylaimk.shinyapps.io/mortalityKR/
+
+- Link to github: https://github.com/Akylai-mk/developing-data-products-course-project
+
+- data taken from http://stat.kg/en/statistics/zdravoohranenie/
+
+
+## Thank you!
